@@ -1,14 +1,25 @@
 import java.util.Scanner;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
 
 public class RetoOne {
-    static List<String> planetas = List.of(
-            "Mercurio", "Venus", "Marte",
-            "Jupiter", "Saturno", "Urano",
-            "Neptuno", "Venus");
+
+    private static Map<String, Long> planetsAndDistance = Map.of(
+            "Mercurio", 77_000L,
+            "Venus", 41_000L,
+            "Marte", 225_000L,
+            "Jupiter", 628_000_000L,
+            "Saturno", 1_275_000_000L,
+            "Urano", 2_725_000_000L,
+            "Neptuno", 4_351_000_000L);
+
+    private static Map<String, Double> shipSpeed = Map.of(
+            "SolarisExplorer", 50_000.0,
+            "OrionSupply", 75_000.0,
+            "Aegis", 100_000.0);
 
     private static String planetaElegido;
+    private static String nombre;
     static Scanner request = new Scanner(System.in);
 
     public static void main(String[] args) throws Exception {
@@ -18,11 +29,23 @@ public class RetoOne {
     }
 
     public static void menuPrincipal() {
-        String nombre = introduccionMision();
-        System.out.println("**¿Estás listo para comenzar, " + nombre + "?");
 
-        // Si, Despliega menu
-        // No, Vuelve pronto, en una nueva mision.
+        System.out.println("**¿Estás listo para comenzar, " + nombre + "?");
+        String decide;
+        boolean ready = false;
+        // Solicitar si esta preparado para comenzar
+        do {
+            System.out.println("(S/N)");
+            decide = request.nextLine();
+            if (decide.equalsIgnoreCase("S")) {
+                ready = true;
+            } else if (decide.equalsIgnoreCase("N")) {
+                System.out.println("Vuelve Pronto, En una Nueva Mision");
+                return;
+            } else {
+                System.out.println("Opcion No valida, Intenta de Nuevo");
+            }
+        } while (!ready);
 
         int option;
 
@@ -41,7 +64,7 @@ public class RetoOne {
                 case 1:
                     elegirDestino();
                     if (planetaElegido != null) {
-                        calcularDistanciaTiempoDeViaje(planetaElegido);
+                        calcularDistancia(planetaElegido);
                     }
                     break;
                 case 2:
@@ -68,10 +91,10 @@ public class RetoOne {
         int option;
 
         System.out.println("""
-                1. Solaris - Explorer
-                2. Orion - Supply
-                3. Artemis - fixer
-                4. Aegis - Protector
+                1. Solaris - Explorer - Nave de Exploracion
+                2. Orion - Supply - Nave de Recursos
+                3. Artemis - fixer  -
+                4. Aegis - Protector - Nave de defensa
                     """);
         System.out.print("De que Nave deseas obtener Informacion: ");
         option = request.nextInt();
@@ -98,39 +121,28 @@ public class RetoOne {
         }
     }
 
-    private static void calcularDistanciaTiempoDeViaje(String planeta) {
+    private static void calcularDistancia(String planeta) {
         // Cuando se elije el destino, se mostrara en consola una barra de progreso,
         // inferiendo calculo de Distancia y tiempo estimado de Viaje
         // Tanto la velocidad como la distancia se toman globales y no cambian para el
         // calculo de la estimacion del tiempo, cambiaria para los eventos aleatorios en
         // donde cada nave tiene una velocidad predefinida
         // y la distancia como referencia seria la nave principal
+        Long distance = planetsAndDistance.get(planeta);
+        if (distance != null) {
+            // ProgressBar
+            System.out.printf("Distancia a %s: %,d Kilometros. %n", planeta, distance);
+            // ProgressBar
+            var EstimatedTime = calculatedEstimatedTime(distance);
+            System.out.printf("Tiempo Estimado de Viaje: %.2f horas \n", EstimatedTime);
 
-        System.out.println("Calculando Distancia y Tiempo Estimado de Viaje al planeta  " + planeta);
-        switch (planeta) {
-            case "Mercurio":
-                System.out.println("Distancia a Mercurio: 2222222");
-                break;
-            case "Venus":
-
-                break;
-            case "Marte":
-
-                break;
-            case "Jupiter":
-
-                break;
-
-            case "Saturno":
-
-                break;
-
-            case "Urano":
-
-                break;
-            default:
-                break;
         }
+    }
+
+    public static double calculatedEstimatedTime(long distance) {
+
+        double velocidad = 100_000.0;
+        return distance / velocidad;
     }
 
     private static void iniciarMision() {
@@ -151,15 +163,15 @@ public class RetoOne {
         int option;
 
         System.out.println("Lista de Planetas");
-
-        for (int i = 0; i < planetas.size(); i++) {
-            System.out.printf("[%d] %s%n", i + 1, planetas.get(i));
+        int index = 1;
+        for (String planeta : planetsAndDistance.keySet()) {
+            System.out.printf("[%d] %s%n", index++, planeta);
         }
 
         System.out.print(" Elija el planeta al cual desearia Viajar: ");
         option = request.nextInt();
-        if (option >= 1 && option <= planetas.size()) {
-            planetaElegido = planetas.get(option - 1);
+        if (option >= 1 && option <= planetsAndDistance.size()) {
+            planetaElegido = new ArrayList<>(planetsAndDistance.keySet()).get(option - 1);
             System.out.println("Usted ha elegido viaja a: " + planetaElegido);
         } else {
             System.out.println("Opcion No valida. Por favor Intente de Nuevo");
@@ -183,9 +195,9 @@ public class RetoOne {
     }
 
     public static String introduccionMision() {
-        System.out.println(System.getProperty("file.encoding"));
+
         System.out.print("Tu nombre: ");
-        String nombre = request.nextLine();
+        nombre = request.nextLine();
         System.out.println("""
                                 =====================================================
                                 |              SIMULADOR INTERPLANETARIO            |
