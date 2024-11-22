@@ -3,6 +3,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RetoOne {
+    static List<String> planetas = List.of(
+            "Mercurio", "Venus", "Marte",
+            "Jupiter", "Saturno", "Urano",
+            "Neptuno", "Venus");
+
+    private static String planetaElegido;
     static Scanner request = new Scanner(System.in);
 
     public static void main(String[] args) throws Exception {
@@ -34,6 +40,9 @@ public class RetoOne {
             switch (option) {
                 case 1:
                     elegirDestino();
+                    if (planetaElegido != null) {
+                        calcularDistanciaTiempoDeViaje(planetaElegido);
+                    }
                     break;
                 case 2:
                     ajustarRecursos();
@@ -60,9 +69,9 @@ public class RetoOne {
 
         System.out.println("""
                 1. Solaris - Explorer
-                2. Orion-Supply
-                3. Artemis-fixer
-                4. Aegis-Protector
+                2. Orion - Supply
+                3. Artemis - fixer
+                4. Aegis - Protector
                     """);
         System.out.print("De que Nave deseas obtener Informacion: ");
         option = request.nextInt();
@@ -89,14 +98,39 @@ public class RetoOne {
         }
     }
 
-    private static void calcularDistanciaTiempoDeViaje() {
+    private static void calcularDistanciaTiempoDeViaje(String planeta) {
         // Cuando se elije el destino, se mostrara en consola una barra de progreso,
         // inferiendo calculo de Distancia y tiempo estimado de Viaje
         // Tanto la velocidad como la distancia se toman globales y no cambian para el
         // calculo de la estimacion del tiempo, cambiaria para los eventos aleatorios en
-        // donde
-        // cada nave tiene una velocidad predefinida
+        // donde cada nave tiene una velocidad predefinida
         // y la distancia como referencia seria la nave principal
+
+        System.out.println("Calculando Distancia y Tiempo Estimado de Viaje al planeta  " + planeta);
+        switch (planeta) {
+            case "Mercurio":
+                System.out.println("Distancia a Mercurio: 2222222");
+                break;
+            case "Venus":
+
+                break;
+            case "Marte":
+
+                break;
+            case "Jupiter":
+
+                break;
+
+            case "Saturno":
+
+                break;
+
+            case "Urano":
+
+                break;
+            default:
+                break;
+        }
     }
 
     private static void iniciarMision() {
@@ -106,6 +140,7 @@ public class RetoOne {
         // Aqui se introducen eventos aleatorios y utiliza los funciones de las naves
         // alternativas
         // para completar la mision.
+        // Los eventos aleatorios, deben ser random, ("""vertuto""")
     }
 
     private static void ajustarRecursos() {
@@ -113,54 +148,22 @@ public class RetoOne {
     }
 
     public static void elegirDestino() {
-        var planetas = new ArrayList<String>(List.of(
-                "Mercurio",
-                "Venus",
-                "Marte",
-                "Jupiter",
-                "Saturno",
-                "Urano",
-                "Neptuno",
-                "Venus"));
-        // Imprimir la lista de Planetas
-        System.out.println("Lista de Planetas");
-        for (String planeta : planetas) {
-            System.out.println(planeta);
-        }
-        System.out.println(" Elija el planeta al cual desearia Viajar...");
         int option;
-        option = request.nextInt();
-        switch (option) {
-            case 1:
-                // pasar como parametro la opcion del array elegida, que ya debe estar
-                // preconfigurada
-                // y asignado las distancias correspondientes
-                calcularDistanciaTiempoDeViaje();
-                break;
-            case 2:
-                calcularDistanciaTiempoDeViaje();
-                break;
-            case 3:
-                calcularDistanciaTiempoDeViaje();
-                break;
-            case 4:
-                calcularDistanciaTiempoDeViaje();
-                break;
-            case 5:
-                calcularDistanciaTiempoDeViaje();
-                break;
-            case 6:
-                calcularDistanciaTiempoDeViaje();
-                break;
-            case 7:
-                calcularDistanciaTiempoDeViaje();
-                break;
-            case 8:
-                calcularDistanciaTiempoDeViaje();
-                break;
 
-            default:
-                break;
+        System.out.println("Lista de Planetas");
+
+        for (int i = 0; i < planetas.size(); i++) {
+            System.out.printf("[%d] %s%n", i + 1, planetas.get(i));
+        }
+
+        System.out.print(" Elija el planeta al cual desearia Viajar: ");
+        option = request.nextInt();
+        if (option >= 1 && option <= planetas.size()) {
+            planetaElegido = planetas.get(option - 1);
+            System.out.println("Usted ha elegido viaja a: " + planetaElegido);
+        } else {
+            System.out.println("Opcion No valida. Por favor Intente de Nuevo");
+            planetaElegido = null;
         }
 
     }
