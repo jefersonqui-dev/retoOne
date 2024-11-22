@@ -14,11 +14,12 @@ public class RetoOne {
             "Neptuno", 4_351_000_000L);
 
     private static Map<String, Double> shipSpeed = Map.of(
-            "SolarisExplorer", 50_000.0,
+            "SolarisExplorer", 50000.0,
             "OrionSupply", 75_000.0,
             "Aegis", 100_000.0);
 
     private static String planetaElegido;
+    private static String shipSelected;
     private static String nombre;
     static Scanner request = new Scanner(System.in);
 
@@ -55,7 +56,7 @@ public class RetoOne {
                     1. Seleccionar Destino
                     2. Ajustar Recursos
                     3. Iniciar Mision
-                    4. Informacion De Da Flota
+                    4. Informacion De La Flota
                     0. Salir
                         """);
             System.out.print("Elige una Opcion: ");
@@ -96,25 +97,25 @@ public class RetoOne {
                 3. Artemis - fixer  -
                 4. Aegis - Protector - Nave de defensa
                     """);
+
         System.out.print("De que Nave deseas obtener Informacion: ");
         option = request.nextInt();
-        switch (option) {
-            case 1:
+        shipSelected = shipSelect(option);
+        var velocidad = shipSpeed.get(shipSelected);
+
+        switch (shipSelected) {
+            case "SolarisExplorer":
+                System.out.printf("- Nave: %s%n- Velocidad: %f%n", shipSelected, velocidad);
                 System.out.println("""
-                        - Nave principal: [Nave de Exploración]
-                        - Velocidad inicial: [150,000 km/h]
                         - Realiza exploraciones rápidas y detecta rutas alternativas
                         - Transporte de tripulación, gestión de recursos, navegación a larga distancia.
                             """);
                 break;
-            case 2:
-
+            case "OrionSupply":
+                System.out.printf("- Nave: %s%n- Velocidad: %f%n", shipSelected, velocidad);
                 break;
-            case 3:
-
-                break;
-            case 4:
-
+            case "Aegis":
+                System.out.printf("- Nave: %s%n- Velocidad: %f%n", shipSelected, velocidad);
                 break;
             default:
                 break;
@@ -159,6 +160,16 @@ public class RetoOne {
 
     }
 
+    private static String shipSelect(int option) {
+        if (option >= 1 && option <= shipSpeed.size()) {
+            shipSelected = new ArrayList<>(shipSpeed.keySet()).get(option - 1);
+
+        } else {
+            System.out.println("Opcion No valida, Intente de Nuevo");
+        }
+        return shipSelected;
+    }
+
     public static void elegirDestino() {
         int option;
 
@@ -172,7 +183,7 @@ public class RetoOne {
         option = request.nextInt();
         if (option >= 1 && option <= planetsAndDistance.size()) {
             planetaElegido = new ArrayList<>(planetsAndDistance.keySet()).get(option - 1);
-            System.out.println("Usted ha elegido viaja a: " + planetaElegido);
+            System.out.println("Usted ha elegido viajar a: " + planetaElegido);
         } else {
             System.out.println("Opcion No valida. Por favor Intente de Nuevo");
             planetaElegido = null;
@@ -213,9 +224,6 @@ public class RetoOne {
                         * Nave de Reparación: Vital para superar fallas técnicas en el camino.
                         * Nave de Defensa: Preparada para enfrentar cualquier amenaza externa.
 
-                        **Tu misión principal**
-                        Lidera a tu equipo con precisión, toma decisiones estratégicas y llega al planeta elegido.
-                        El futuro de la humanidad podría depender de este viaje.
                                                                 """);
         return nombre;
 
