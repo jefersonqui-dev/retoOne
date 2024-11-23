@@ -1,6 +1,7 @@
 import java.util.Scanner;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Random;
 
 public class RetoOne {
 
@@ -27,6 +28,8 @@ public class RetoOne {
         introduccionMision();
         configuracionInicialDeLaMision();
         menuPrincipal();
+        // nave(15000);// recibe parametros -> tiempo estimado, distancia, velocidad,
+        // combustible y oxigeno, eventos
     }
 
     public static void menuPrincipal() {
@@ -227,6 +230,74 @@ public class RetoOne {
                                                                 """);
         return nombre;
 
+    }
+
+    public static void nave(long duracionAnimacion) {
+
+        // Diseño de la nave en varias líneas
+        String[] nave = {
+                "        //-A-\\\\",
+                "  ___---=======---___",
+                "(=__\\   /.. ..\\   /__=)",
+                "     ---\\__O__/---"
+        };
+
+        // Dimensiones del espacio de animación
+        int anchoPantalla = 100; // Ancho máximo de la pantalla
+        int velocidad = 3; // Aumento de la velocidad de movimiento para un efecto más amplio
+        long tiempoInicio = System.currentTimeMillis();
+
+        // Animación
+        int x = anchoPantalla / 2; // Comienza en el centro de la pantalla
+        Random rand = new Random(); // Generador de números aleatorios
+        boolean moviendoDerecha = rand.nextBoolean(); // Dirección aleatoria inicial
+        while (System.currentTimeMillis() - tiempoInicio < duracionAnimacion) {
+            // Limpia la consola (simulación)
+            System.out.print("\033[H\033[2J");
+            System.out.flush();
+
+            // Imprime cada línea del diseño con desplazamiento horizontal
+            for (String linea : nave) {
+                System.out.println(" ".repeat(x) + linea);
+            } // Pausa para animación
+
+            System.out.println("""
+
+
+                    Ingresando a Puente Einstein-Rousen...
+                    Velocidad: 100.000km/h
+                    Combustible: 60%
+                    Oxigeno:70%"
+                    Tiempo Restante: 5 dias
+                    """);
+
+            try {
+                Thread.sleep(300); // 40 ms
+            } catch (InterruptedException e) {
+                System.out.println("El hilo fue interrumpido.");
+            }
+
+            // Mueve la nave de manera aleatoria (con rebote)
+            if (rand.nextBoolean()) {
+                // Cambiar aleatoriamente la dirección
+                moviendoDerecha = !moviendoDerecha;
+            }
+
+            if (moviendoDerecha) {
+                x += velocidad; // Movimiento hacia la derecha
+                if (x >= anchoPantalla - nave[0].length()) {
+                    moviendoDerecha = false; // Cambia dirección
+                }
+            } else {
+                x -= velocidad; // Movimiento hacia la izquierda
+                if (x <= 0) {
+                    moviendoDerecha = true; // Cambia dirección
+                }
+            }
+        }
+
+        // Mensaje al finalizar la animación
+        System.out.println("\n¡Viaje completado!");
     }
 
 }
