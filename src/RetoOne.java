@@ -149,7 +149,9 @@ public class RetoOne {
     }
 
     private static void iniciarMision() {
-        nave(15000);
+        nave(15000); // nave(15000);// recibe parametros -> tiempo estimado, distancia, velocidad,
+        // combustible y oxigeno, eventos
+
         // Recibe parametros como, planeta destino, distancia, recursos y las
         // configuraciones
         // establecidas
