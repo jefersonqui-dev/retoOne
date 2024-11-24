@@ -2,23 +2,37 @@ import java.util.Scanner;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Random;
+import java.util.LinkedHashMap;
 
 public class RetoOne {
+    public static String RESET = "\033[0m";
+    public static String RED = "\033[0;31m"; // Red
+    public static String GREEN = "\033[0;32m"; // Green
+    public static String YELLOW = "\033[0;36m"; // Yellow
+    public static String BLUE = "\033[0;34m"; // Blue
+    public static String CYAN = "\033[0;36m"; // Cyan
+    public static String PURPLE = "\033[0;35m"; // White
 
-    private static Map<String, Long> planetsAndDistance = Map.of(
-            "Mercurio", 77_000L,
-            "Venus", 41_000L,
-            "Marte", 225_000L,
-            "Jupiter", 628_000_000L,
-            "Saturno", 1_275_000_000L,
-            "Urano", 2_725_000_000L,
-            "Neptuno", 4_351_000_000L);
+    private static Map<String, Long> planetsAndDistance = new LinkedHashMap<>() {
+        {
+            put("Mercurio", 77_000_000L);
+            put("Venus", 61_1000L);
+            put("Marte", 54_000_000L);
+            put("Jupiter", 587_000_000L);
+            put("Saturno", 1_345_000_000L);
+            put("Urano", 2_725_000_000L);
+            put("Neptuno", 4_351_400_000L);
+        }
+    };
 
-    private static Map<String, Double> shipSpeed = Map.of(
-            "SolarisExplorer", 50000.0,
-            "OrionSupply", 75_000.0,
-            "ArtemisFixer", 80_000.0,
-            "Aegis", 100_000.0);
+    private static Map<String, Double> shipSpeed = new LinkedHashMap<>() {
+        {
+            put("SolarisExplorer", 50_000.0);
+            put("OrionSupply", 75_000.0);
+            put("ArtemisFixer", 80_000.0);
+            put("Aegis", 100_000.0);
+        }
+    };
 
     private static Map<String, String[]> shipDescriptions = Map.of(
             "SolarisExplorer", new String[] {
@@ -31,7 +45,7 @@ public class RetoOne {
                     "Reabastece la Nave principal con oxigeno, combustible y otros recursos y",
                     "Bajo nivel de combustible, falla de oxigeno o agua"
             },
-            "Artemis - Fixer", new String[] {
+            "ArtemisFixer", new String[] {
                     "Nave de Reparacion",
                     "Proporciona defensa contra asteroides, escombros espaciales y amenazas externas",
                     "Impacto inminente de asteroides o tormentas de radiación"
@@ -52,17 +66,18 @@ public class RetoOne {
 
     public static void main(String[] args) throws Exception {
         introduccionMision();
-        configuracionInicialDeLaMision();
+
         menuPrincipal();
 
     }
 
     public static void menuPrincipal() {
 
-        System.out.println("**¿Estás listo para comenzar, " + nombre + "?");
+        System.out.println(BLUE + "**¿Estás listo para comenzar, " + nombre + "?" + RESET);
         String decide;
         boolean ready = false;
         // Solicitar si esta preparado para comenzar
+
         do {
             System.out.println("(S/N)");
             decide = request.nextLine();
@@ -75,7 +90,8 @@ public class RetoOne {
                 System.out.println("Opcion No valida, Intenta de Nuevo");
             }
         } while (!ready);
-
+        System.out.println("!Perfecto: Aqui mostramos la informacion básica de tu Nave: ");
+        configuracionInicialDeLaMision();
         int option;
 
         boolean exit = false;
@@ -88,46 +104,64 @@ public class RetoOne {
                     0. Salir
                         """);
             System.out.print("Elige una Opcion: ");
-            option = request.nextInt();
-            switch (option) {
-                case 1:
-                    elegirDestino();
-                    if (planetaElegido != null) {
-                        calcularDistancia(planetaElegido);
-                    }
-                    break;
-                case 2:
-                    ajustarRecursos();
-                    break;
-                case 3:
-                    iniciarMision();
-                    break;
-                case 4:
-                    informacionDeLaFlota();
-                    break;
-                case 0:
-                    exit = true;
-                    break;
-                default:
-                    System.out.println("Opcion no valida, Intente de Nuevo");
-                    break;
+
+            if (request.hasNextInt()) {
+                option = request.nextInt();
+                switch (option) {
+                    case 1:
+                        elegirDestino();
+                        if (planetaElegido != null) {
+                            calcularDistancia(planetaElegido);
+                        }
+                        break;
+                    case 2:
+                        ajustarRecursos();
+                        break;
+                    case 3:
+                        iniciarMision();
+                        break;
+                    case 4:
+                        informacionDeLaFlota();
+                        break;
+                    case 0:
+                        exit = true;
+                        break;
+                    default:
+                        System.out.println(PURPLE + "Opcion no valida, Intente de Nuevo" + RESET);
+                        break;
+                }
+            } else {
+                System.out.println(PURPLE + "Entrada Invalida.Porfavor Ingrese un numero.(0 - 4)" + RESET);
+                request.next();// limpiar entrada no valida
             }
         } while (!exit);
-
+        System.out.println("¡Gracias por usar el Simulador! ¡Hasta la próxima misión!");
     }
 
     private static void informacionDeLaFlota() {
-        int option;
+        int option = 0;
+        boolean inputValido = false;
+        do {
+            System.out.println(YELLOW + """
+                    [1] SolarisExplorer
+                    [2] OrionSupply
+                    [3] ArtemisFixer
+                    [4] Aegis
+                    """ + RESET);
+            System.out.print("De que nave desea obtener Informacion (1-4): ");
 
-        System.out.println("""
-                [1] SolarisExplorer
-                [2] OrionSupply
-                [3] ArtemisFixer
-                [4] Aegis
-                    """);
-
-        System.out.print("De que Nave deseas obtener Informacion: ");
-        option = request.nextInt();
+            if (request.hasNextInt()) { // Verifica si la entrada es un entero
+                option = request.nextInt();
+                if (option >= 1 && option <= 4) {
+                    inputValido = true; // La entrada es válida
+                } else {
+                    System.out.println("Opción fuera de rango. Intente de nuevo.");
+                }
+            } else {
+                System.out.println("Entrada inválida. Por favor, ingrese un número.");
+                request.next(); // Limpiar la entrada no válida
+            }
+        } while (!inputValido);
         shipSelected = shipSelect(option);
         velocidad = shipSpeed.get(shipSelected);
         combustible = 300000;
@@ -164,7 +198,7 @@ public class RetoOne {
             String objetivo,
             String funcionPrincipal, String utilidad) {
         DrawLine();
-        System.out.printf("""
+        System.out.printf(CYAN + """
                     Nave Principal: <<<%s>>>
                     Objetivo: %s
                     Velocidad: %.2f km/h
@@ -172,32 +206,24 @@ public class RetoOne {
                     Oxigeno: %.2f
                     Funcion Principal: %s
                     Utiliad: %s
-                """, tipoNave, objetivo, velocidad, combustible, oxigeno, funcionPrincipal, utilidad);
+                """ + RESET, tipoNave, objetivo, velocidad, combustible, oxigeno, funcionPrincipal, utilidad);
         DrawLine();
 
     }
 
     private static void calcularDistancia(String planeta) {
-        // Cuando se elije el destino, se mostrara en consola una barra de progreso,
-        // inferiendo calculo de Distancia y tiempo estimado de Viaje
-        // Tanto la velocidad como la distancia se toman globales y no cambian para el
-        // calculo de la estimacion del tiempo, cambiaria para los eventos aleatorios en
-        // donde cada nave tiene una velocidad predefinida
-        // y la distancia como referencia seria la nave principal
+
         Long distance = planetsAndDistance.get(planeta);
         if (distance != null) {
-            // ProgressBar
-            System.out.printf("Distancia a %s: %,d Kilometros. %n", planeta, distance);
-            // ProgressBar
-            var EstimatedTime = calculatedEstimatedTime(distance);
-            System.out.printf("Tiempo Estimado de Viaje: %.2f horas \n", EstimatedTime);
+            double velocidad = shipSpeed.getOrDefault(shipSelected, 100000.0);
+            System.out.printf(YELLOW + "Distancia a %s: %,d Kilometros. %n" + RESET, planeta, distance);
 
+            var EstimatedTime = calculatedEstimatedTime(distance, velocidad);
+            System.out.printf(YELLOW + "Tiempo Estimado de Viaje: %.2f horas \n" + RESET, EstimatedTime);
         }
     }
 
-    public static double calculatedEstimatedTime(long distance) {
-
-        double velocidad = 100_000.0;
+    public static double calculatedEstimatedTime(long distance, double velocidad) {
         return distance / velocidad;
     }
 
@@ -231,35 +257,46 @@ public class RetoOne {
     }
 
     public static void elegirDestino() {
-        int option;
+        int option = 0;
+        boolean inputValido = false;
+        do {
+            System.out.println("Lista de Planetas");
+            int index = 1;
+            for (String planeta : planetsAndDistance.keySet()) {
+                System.out.printf(YELLOW + "[%d] %s%n", index++, planeta + RESET);
+            }
 
-        System.out.println("Lista de Planetas");
-        int index = 1;
-        for (String planeta : planetsAndDistance.keySet()) {
-            System.out.printf("[%d] %s%n", index++, planeta);
-        }
+            System.out.print(" Elija el planeta al cual desearia Viajar: ");
+            if (request.hasNextInt()) {
+                option = request.nextInt();
+                if (option >= 0 && option <= planetsAndDistance.size()) {
+                    inputValido = true;
+                } else {
+                    System.out.println("Opcion Fuera de rango, Intente de Nuevo.");
+                }
 
-        System.out.print(" Elija el planeta al cual desearia Viajar: ");
-        option = request.nextInt();
-        if (option >= 1 && option <= planetsAndDistance.size()) {
-            planetaElegido = new ArrayList<>(planetsAndDistance.keySet()).get(option - 1);
-            System.out.println("Usted ha elegido viajar a: " + planetaElegido);
-        } else {
-            System.out.println("Opcion No valida. Por favor Intente de Nuevo");
-            planetaElegido = null;
-        }
+            } else {
+                System.out.println("Entrada Invalida. por favor. Ingrese un Numero(1 - 7).");
+                request.next();
+            }
+        } while (!inputValido);
+
+        planetaElegido = new ArrayList<>(planetsAndDistance.keySet()).get(option - 1);
+        System.out.println(YELLOW + "Usted ha elegido viajar a: " + planetaElegido + RESET);
+        mostrarBarraDeProgreso(5000);
 
     }
 
     public static void configuracionInicialDeLaMision() {
-
-        System.out.println("""
+        DrawLine();
+        System.out.print(YELLOW + """
                 Nave Principal: Solaris Explorer
                 Velocidad: parametro
                 combustible: parametro
                 oxigeno:
                 estado: 0%
-                """);
+                """ + RESET);
+        DrawLine();
         // La nave se ha configurado con los siguientes parametros, si desea ajustarlos
         // Se debe Mostrar lo siguiente en consola, Luego de la confirmacion(S/N
         // - Nave principal: [Nave de Exploración]
@@ -275,24 +312,17 @@ public class RetoOne {
 
     public static String introduccionMision() {
 
-        System.out.print("Tu nombre: ");
+        System.out.println(YELLOW + """
+                                                       =====================================================
+                                                       |              SIMULADOR INTERPLANETARIO            |
+                                                       |               MISION DE EXPLORACION               |
+                                                       =====================================================
+
+                """ + RESET);
+        System.out.print("Por favor dinos tu Nombre: ");
         nombre = request.nextLine();
-        System.out.println("""
-                                =====================================================
-                                |              SIMULADOR INTERPLANETARIO            |
-                                |               MISION DE EXPLORACION               |
-                                =====================================================
-                ¡Bienvenid@, ! """
-                + nombre +
-                """
+        System.out.println(YELLOW + "  !Bienvenid@! a tu Viaje Interplanetario" + RESET);
 
-                        Tu flota incluye:
-                        * Nave de Exploración: Tu vehículo principal para cruzar el espacio.
-                        * Nave de Recursos: Siempre lista para abastecer combustible y oxígeno.
-                        * Nave de Reparación: Vital para superar fallas técnicas en el camino.
-                        * Nave de Defensa: Preparada para enfrentar cualquier amenaza externa.
-
-                                                                """);
         return nombre;
 
     }
@@ -323,7 +353,7 @@ public class RetoOne {
 
             // Imprime cada línea del diseño con desplazamiento horizontal
             for (String linea : nave) {
-                System.out.println(" ".repeat(x) + linea);
+                System.out.println(YELLOW + " ".repeat(x) + linea + RESET);
             } // Pausa para animación
 
             System.out.println("""
@@ -362,12 +392,49 @@ public class RetoOne {
         }
 
         // Mensaje al finalizar la animación
-        System.out.println("\n¡Viaje completado!");
+        System.out.println(YELLOW + "\n¡Viaje completado!" + RESET);
     }
 
     public static void DrawLine() {
-        System.out.println(
-                "░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░");
+        System.out.println(CYAN +
+                "■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■" +
+                RESET);
+    }
+
+    public static void mostrarBarraDeProgreso(long duracionTotal) {
+        int anchoPantalla = 100; // Ancho de la barra de progreso
+        long tiempoInicio = System.currentTimeMillis();
+        System.out.println("Calculando Distancia y tiempo estimado del Viaje...");
+
+        while (System.currentTimeMillis() - tiempoInicio <= duracionTotal) {
+            long tiempoTranscurrido = System.currentTimeMillis() - tiempoInicio;
+            int progreso = (int) ((tiempoTranscurrido * anchoPantalla) / duracionTotal);
+
+            // Crear la barra de progreso
+            StringBuilder barra = new StringBuilder();
+            for (int i = 0; i <= anchoPantalla; i++) {
+                if (i <= progreso) {
+                    barra.append(YELLOW + "■" + RESET);
+                } else {
+                    barra.append(" ");
+                }
+            }
+
+            // Imprimir la barra de progreso con porcentaje
+            int porcentaje = (progreso * 100) / anchoPantalla;
+            System.out.print("\r[" + barra + "] " + porcentaje + "%");
+
+            // Pausa para la animación
+            try {
+                Thread.sleep(100); // Pausa de 100 ms
+            } catch (InterruptedException e) {
+                System.out.println("\nEl hilo fue interrumpido.");
+                Thread.currentThread().interrupt(); // Restaurar el estado de interrupción
+                break;
+            }
+        }
+
+        System.out.println("\n¡Calculo completado!");
     }
 
 }
