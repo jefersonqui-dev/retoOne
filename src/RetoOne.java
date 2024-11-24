@@ -17,11 +17,37 @@ public class RetoOne {
     private static Map<String, Double> shipSpeed = Map.of(
             "SolarisExplorer", 50000.0,
             "OrionSupply", 75_000.0,
+            "ArtemisFixer", 80_000.0,
             "Aegis", 100_000.0);
+
+    private static Map<String, String[]> shipDescriptions = Map.of(
+            "SolarisExplorer", new String[] {
+                    "Nave de Exploraciones",
+                    "Realiza Exploraciones Rápidas y detecta Rutas Alternativas",
+                    "Transporte de Tripulacion, gestion de Recursos, Navegacion a larga distancia"
+            },
+            "OrionSupply", new String[] {
+                    "Nave de Recursos",
+                    "Reabastece la Nave principal con oxigeno, combustible y otros recursos y",
+                    "Bajo nivel de combustible, falla de oxigeno o agua"
+            },
+            "Artemis - Fixer", new String[] {
+                    "Nave de Reparacion",
+                    "Proporciona defensa contra asteroides, escombros espaciales y amenazas externas",
+                    "Impacto inminente de asteroides o tormentas de radiación"
+            },
+            "Aegis", new String[] {
+                    "Nave de Reparacion",
+                    "Realiza reparaciones mecanicas y electronicas",
+                    "Fallas en sistemas, averias de motor, o fallas en los paneles"
+            });
 
     private static String planetaElegido;
     private static String shipSelected;
     private static String nombre;
+    private static double velocidad;
+    private static double combustible;
+    private static double oxigeno;
     static Scanner request = new Scanner(System.in);
 
     public static void main(String[] args) throws Exception {
@@ -94,34 +120,61 @@ public class RetoOne {
         int option;
 
         System.out.println("""
-                1. Solaris - Explorer - Nave de Exploracion
-                2. Orion - Supply - Nave de Recursos
-                3. Artemis - fixer  -
-                4. Aegis - Protector - Nave de defensa
+                [1] SolarisExplorer
+                [2] OrionSupply
+                [3] ArtemisFixer
+                [4] Aegis
                     """);
 
         System.out.print("De que Nave deseas obtener Informacion: ");
         option = request.nextInt();
         shipSelected = shipSelect(option);
-        var velocidad = shipSpeed.get(shipSelected);
-
+        velocidad = shipSpeed.get(shipSelected);
+        combustible = 300000;
+        oxigeno = 2000;
+        String[] description = shipDescriptions.getOrDefault(shipSelected,
+                new String[] { "Desconocida", "No esp", "No esp" });
+        var shipOvjetive = description[0];
+        var funcionPrincipal = description[1];
+        var utilidad = description[2];
         switch (shipSelected) {
             case "SolarisExplorer":
-                System.out.printf("- Nave: %s%n- Velocidad: %f%n", shipSelected, velocidad);
-                System.out.println("""
-                        - Realiza exploraciones rápidas y detecta rutas alternativas
-                        - Transporte de tripulación, gestión de recursos, navegación a larga distancia.
-                            """);
+                printShipInformation(shipSelected, velocidad, combustible, oxigeno, shipOvjetive, funcionPrincipal,
+                        utilidad);
                 break;
             case "OrionSupply":
-                System.out.printf("- Nave: %s%n- Velocidad: %f%n", shipSelected, velocidad);
+                printShipInformation(shipSelected, velocidad, combustible, oxigeno, shipOvjetive, funcionPrincipal,
+                        utilidad);
+                break;
+            case "ArtemisFixer":
+                printShipInformation(shipSelected, velocidad, combustible, oxigeno, shipOvjetive, funcionPrincipal,
+                        utilidad);
                 break;
             case "Aegis":
-                System.out.printf("- Nave: %s%n- Velocidad: %f%n", shipSelected, velocidad);
+                printShipInformation(shipSelected, velocidad, combustible, oxigeno, shipOvjetive, funcionPrincipal,
+                        utilidad);
                 break;
             default:
                 break;
+
         }
+    }
+
+    private static void printShipInformation(String tipoNave, double velocidad, double combustible, double oxigeno,
+            String objetivo,
+            String funcionPrincipal, String utilidad) {
+        DrawLine();
+        System.out.printf("""
+                    Nave Principal: <<<%s>>>
+                    Objetivo: %s
+                    Velocidad: %.2f km/h
+                    Combustible: %.2f
+                    Oxigeno: %.2f
+                    Funcion Principal: %s
+                    Utiliad: %s
+                """, tipoNave, objetivo, velocidad, combustible, oxigeno, funcionPrincipal, utilidad);
+        DrawLine();
+
     }
 
     private static void calcularDistancia(String planeta) {
@@ -162,17 +215,19 @@ public class RetoOne {
     }
 
     private static void ajustarRecursos() {
-
+        // al introducir eventos aleatorios, se debe mostrar opciones
+        // para ajustar recursos tanto al inicio de la mision y durante el vuelo
     }
 
     private static String shipSelect(int option) {
-        if (option >= 1 && option <= shipSpeed.size()) {
-            shipSelected = new ArrayList<>(shipSpeed.keySet()).get(option - 1);
 
-        } else {
-            System.out.println("Opcion No valida, Intente de Nuevo");
-        }
-        return shipSelected;
+        return switch (option) {
+            case 1 -> "SolarisExplorer";
+            case 2 -> "OrionSupply";
+            case 3 -> "ArtemisFixer";
+            case 4 -> "Aegis";
+            default -> "Desconocida";
+        };
     }
 
     public static void elegirDestino() {
@@ -197,6 +252,14 @@ public class RetoOne {
     }
 
     public static void configuracionInicialDeLaMision() {
+
+        System.out.println("""
+                Nave Principal: Solaris Explorer
+                Velocidad: parametro
+                combustible: parametro
+                oxigeno:
+                estado: 0%
+                """);
         // La nave se ha configurado con los siguientes parametros, si desea ajustarlos
         // Se debe Mostrar lo siguiente en consola, Luego de la confirmacion(S/N
         // - Nave principal: [Nave de Exploración]
@@ -219,7 +282,7 @@ public class RetoOne {
                                 |              SIMULADOR INTERPLANETARIO            |
                                 |               MISION DE EXPLORACION               |
                                 =====================================================
-                ¡Bienvenido, ! """
+                ¡Bienvenid@, ! """
                 + nombre +
                 """
 
@@ -300,6 +363,11 @@ public class RetoOne {
 
         // Mensaje al finalizar la animación
         System.out.println("\n¡Viaje completado!");
+    }
+
+    public static void DrawLine() {
+        System.out.println(
+                "░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░");
     }
 
 }
