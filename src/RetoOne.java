@@ -62,6 +62,7 @@ public class RetoOne {
     private static double velocidad;
     private static double combustible;
     private static double oxigeno;
+    private static long distance;
     static Scanner request = new Scanner(System.in);
 
     public static void main(String[] args) throws Exception {
@@ -118,7 +119,7 @@ public class RetoOne {
                         ajustarRecursos();
                         break;
                     case 3:
-                        iniciarMision();
+                        iniciarMision(planetaElegido);
                         break;
                     case 4:
                         informacionDeLaFlota();
@@ -213,9 +214,9 @@ public class RetoOne {
 
     private static void calcularDistancia(String planeta) {
 
-        Long distance = planetsAndDistance.get(planeta);
-        if (distance != null) {
-            double velocidad = shipSpeed.getOrDefault(shipSelected, 100000.0);
+        Long distancia = planetsAndDistance.get(planeta);
+        if (distancia != null) {
+            velocidad = shipSpeed.getOrDefault(shipSelected, 100000.0);
             System.out.printf(YELLOW + "Distancia a %s: %,d Kilometros. %n" + RESET, planeta, distance);
 
             var EstimatedTime = calculatedEstimatedTime(distance, velocidad);
@@ -227,13 +228,16 @@ public class RetoOne {
         return distance / velocidad;
     }
 
-    private static void iniciarMision() {
-        nave(15000); // nave(15000);// recibe parametros -> tiempo estimado, distancia, velocidad,
-        // combustible y oxigeno, eventos
+    private static void iniciarMision(String planeta) {
+        // long duracionAnimacion, double combustible, double oxigeno, double
+        // velocidadNave, String destino, String tiempoRestante
 
-        // Recibe parametros como, planeta destino, distancia, recursos y las
-        // configuraciones
-        // establecidas
+        distance = planetsAndDistance.get(planeta);
+        double tiempoEstimadoHoras = calculatedEstimatedTime(distance, velocidad);
+        String tiempoRestante = tiempoEstimadoHoras + "Horas";
+        long duracionAnimacion = (long) (tiempoEstimadoHoras * 36000000);
+        nave(duracionAnimacion, 60, 80, 100000, planetaElegido, tiempoRestante);
+
         // Aqui se introducen eventos aleatorios y utiliza los funciones de las naves
         // alternativas
         // para completar la mision.
@@ -327,7 +331,8 @@ public class RetoOne {
 
     }
 
-    public static void nave(long duracionAnimacion) {
+    public static void nave(long duracionAnimacion, double combustible, double oxigeno, double velocidadNave,
+            String destino, String tiempoRestante) {
 
         // Diseño de la nave en varias líneas
         String[] nave = {
@@ -356,15 +361,17 @@ public class RetoOne {
                 System.out.println(YELLOW + " ".repeat(x) + linea + RESET);
             } // Pausa para animación
 
-            System.out.println("""
+            System.out.printf(PURPLE + """
 
-
-                    Ingresando a Puente Einstein-Rousen...
-                    Velocidad: 100.000km/h
-                    Combustible: 60%
-                    Oxigeno:70%"
-                    Tiempo Restante: 5 dias
-                    """);
+                    Destino: %s
+                    Velocidad: %.2f km/h
+                    Combustible: %.2f%%
+                    Oxigeno: %.2f%%
+                    Tiempo Restante:%s
+                    """ + RESET, destino, velocidadNave, combustible, oxigeno, tiempoRestante);
+            // simulla consumo de combustible y oxigeno
+            combustible -= (distance / velocidad) * 0.1;
+            oxigeno -= (distance / velocidad) * 0.05;
 
             try {
                 Thread.sleep(300); // 40 ms
