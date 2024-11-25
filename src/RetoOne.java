@@ -1,8 +1,8 @@
-import java.util.Scanner;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Random;
-import java.util.LinkedHashMap;
+import java.util.Scanner;
 
 public class RetoOne {
     public static String RESET = "\033[0m";
@@ -140,6 +140,7 @@ public class RetoOne {
     }
 
     private static void informacionDeLaFlota() {
+    
         int option = 0;
         boolean inputValido = false;
         do {
@@ -165,8 +166,8 @@ public class RetoOne {
         } while (!inputValido);
         shipSelected = shipSelect(option);
         velocidad = shipSpeed.get(shipSelected);
-        combustible = 300000;
-        oxigeno = 2000;
+        combustible = ajustarRecursos(); 
+        oxigeno = oxigeno (); 
         String[] description = shipDescriptions.getOrDefault(shipSelected,
                 new String[] { "Desconocida", "No esp", "No esp" });
         var shipOvjetive = description[0];
@@ -217,10 +218,12 @@ public class RetoOne {
         Long distancia = planetsAndDistance.get(planeta);
         if (distancia != null) {
             velocidad = shipSpeed.getOrDefault(shipSelected, 100000.0);
-            System.out.printf(YELLOW + "Distancia a %s: %,d Kilometros. %n" + RESET, planeta, distance);
+            System.out.printf(YELLOW + "Distancia a %s: %,d Kilometros. %n" + RESET, planeta, distancia);
 
-            var EstimatedTime = calculatedEstimatedTime(distance, velocidad);
-            System.out.printf(YELLOW + "Tiempo Estimado de Viaje: %.2f horas \n" + RESET, EstimatedTime);
+            var EstimatedTime = calculatedEstimatedTime( distancia, velocidad);
+            var dias = EstimatedTime /24; 
+            var horasRestantes = EstimatedTime %24; 
+            System.out.printf(YELLOW + "%.2f dias & %.2f horas %n" + RESET, dias, horasRestantes);
         }
     }
 
@@ -244,9 +247,21 @@ public class RetoOne {
         // Los eventos aleatorios, deben ser random, ("""vertuto""")
     }
 
-    private static void ajustarRecursos() {
+    private static double  ajustarRecursos() {
         // al introducir eventos aleatorios, se debe mostrar opciones
         // para ajustar recursos tanto al inicio de la mision y durante el vuelo
+        combustible = 80; 
+       
+        return combustible; 
+
+        
+
+    }
+    public static double  oxigeno () {
+        oxigeno = 70; 
+         return oxigeno; 
+
+        
     }
 
     private static String shipSelect(int option) {
@@ -333,6 +348,7 @@ public class RetoOne {
 
     public static void nave(long duracionAnimacion, double combustible, double oxigeno, double velocidadNave,
             String destino, String tiempoRestante) {
+                
 
         // Diseño de la nave en varias líneas
         String[] nave = {
