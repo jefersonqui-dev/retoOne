@@ -27,41 +27,41 @@ public class RetoOne {
 
     private static Map<String, Double> shipSpeed = new LinkedHashMap<>() {
         {
-            put("SolarisExplorer", 50_000.0);
-            put("OrionSupply", 75_000.0);
-            put("ArtemisFixer", 80_000.0);
-            put("Aegis", 100_000.0);
+            put("MillenniumFalcon", 50_000.0);
+            put("USSEnterprise", 75_000.0);
+            put("Nostromo", 80_000.0);
+            put("Serenity", 100_000.0);
         }
     };
     private static Map<String, Double> consumoCombustible = new LinkedHashMap<>() {
         {
-            put("SolarisExplorer", 50.0); // consumo en uniades por cada millon de kilometros
-            put("OrionSupply", 75.0);
-            put("ArtemisFixer", 80.0);
-            put("Aegis", 100.0);
+            put("MillenniumFalcon", 50.0); // consumo en uniades por cada millon de kilometros
+            put("USSEnterprise", 75.0);
+            put("Nostromo", 80.0);
+            put("Serenity", 100.0);
         }
     };
 
     private static Map<String, String[]> shipDescriptions = Map.of(
-            "SolarisExplorer", new String[] {
-                    "Nave de Exploraciones",
-                    "Realiza Exploraciones Rápidas y detecta Rutas Alternativas",
-                    "Transporte de Tripulacion, gestion de Recursos, Navegacion a larga distancia"
+            "MillenniumFalcon", new String[] {
+                    "Caza Estelar",
+                    "Una de las naves más rápidas y famosas de la galaxia, ideal para contrabandistas y rebeldes.",
+                    "Alta velocidad, capacidad de carga y habilidades de evasión excepcionales."
             },
-            "OrionSupply", new String[] {
-                    "Nave de Recursos",
-                    "Reabastece la Nave principal con oxygen, combustible y otros recursos y",
-                    "Bajo nivel de combustible, falla de oxygen o agua"
+            "USSEnterprise", new String[] {
+                    "Nave Autonoma de exploración",
+                    "Equipada con sensores Avanzados para exploracion intergalactica",
+                    "Alta velocidad y capacidad de gestion de recursos, ideal para descubrir lo desconocido"
             },
-            "ArtemisFixer", new String[] {
+            "Nostromo", new String[] {
                     "Nave de Reparacion",
-                    "Proporciona defensa contra asteroides, escombros espaciales y amenazas externas",
-                    "Impacto inminente de asteroides o tormentas de radiación"
+                    "Ideal para misiones prolongadas, realizar autodiagnosticos y reparaciones menores",
+                    "Robustez y durabilidad en condiciones extremas"
             },
-            "Aegis", new String[] {
-                    "Nave de Reparacion",
-                    "Realiza reparaciones mecanicas y electronicas",
-                    "Fallas en sistemas, averias de motor, o fallas en los paneles"
+            "Serenity", new String[] {
+                    "Nave de Tranporte Comercial",
+                    "Realiza reparaciones mecanicas y electronic",
+                    "Sistemas Avanzados de monitoreo y reparacion para misiones críticas"
             });
 
     private static String chosenPlanet;
@@ -195,10 +195,10 @@ public class RetoOne {
         boolean inputValido = false;
         do {
             System.out.println(YELLOW + """
-                    [1] SolarisExplorer
-                    [2] OrionSupply
-                    [3] ArtemisFixer
-                    [4] Aegis
+                    [1] MillenniumFalcon
+                    [2] USSEnterprise
+                    [3] Nostromo
+                    [4] Serenity
                     """ + RESET);
             System.out.print("De que nave desea obtener Informacion (1-4): ");
 
@@ -223,19 +223,19 @@ public class RetoOne {
         var mainFunction = description[1];
         var utility = description[2];
         switch (shipSelected) {
-            case "SolarisExplorer":
+            case "MillenniumFalcon":
                 printShipInformation(shipSelected, velocidad, shipOvjetive, mainFunction,
                         utility);
                 break;
-            case "OrionSupply":
+            case "USSEnterprise":
                 printShipInformation(shipSelected, velocidad, shipOvjetive, mainFunction,
                         utility);
                 break;
-            case "ArtemisFixer":
+            case "Nostromo":
                 printShipInformation(shipSelected, velocidad, shipOvjetive, mainFunction,
                         utility);
                 break;
-            case "Aegis":
+            case "Serenity":
                 printShipInformation(shipSelected, velocidad, shipOvjetive, mainFunction,
                         utility);
                 break;
@@ -290,9 +290,9 @@ public class RetoOne {
 
         distance = planetsAndDistance.get(planeta);
         double estimatedTimeHours = calculatedEstimatedTime(distance, velocidad);
-        String remainingTime = estimatedTimeHours + "Horas";
-        long duracionAnimacion = (long) (estimatedTimeHours * 36000000);
-        nave(duracionAnimacion, 60, 80, 100000, chosenPlanet, remainingTime);
+        double remainingTime = estimatedTimeHours;
+        long duracionAnimacion = (long) (estimatedTimeHours * 1000);
+        nave(duracionAnimacion, 100000, chosenPlanet, remainingTime);
 
         // Aqui se introducen eventos aleatorios y utiliza los funciones de las naves
         // alternativas
@@ -314,7 +314,7 @@ public class RetoOne {
 
     public static double fuelAdjust() {
         distance = planetsAndDistance.get(chosenPlanet);
-        double fuel = consumoCombustible.get("SolarisExplorer") * distance;
+        double fuel = consumoCombustible.get(chosenShip) * distance;
         return fuel;
 
     }
@@ -322,10 +322,10 @@ public class RetoOne {
     private static String shipSelect(int option) {
 
         return switch (option) {
-            case 1 -> "SolarisExplorer";
-            case 2 -> "OrionSupply";
-            case 3 -> "ArtemisFixer";
-            case 4 -> "Aegis";
+            case 1 -> "MillenniumFalcon";
+            case 2 -> "USSEnterprise";
+            case 3 -> "Nostromo";
+            case 4 -> "Serenity";
             default -> "Desconocida";
         };
     }
@@ -371,6 +371,38 @@ public class RetoOne {
                 RESET, velocidad, fuel, oxygen);
     }
 
+    public static void mostrarBarraDeProgresoConCuentaRegresiva(int segundos) {
+        int anchoPantalla = 10; // Número total de caracteres en la barra de progreso
+        System.out.println("El viaje interplanetario comenzará en:");
+
+        long tiempoInicio = System.currentTimeMillis();
+
+        while ((System.currentTimeMillis() - tiempoInicio) / 1000 < segundos) {
+            long tiempoTranscurrido = (System.currentTimeMillis() - tiempoInicio) / 1000;
+            int tiempoRestante = segundos - (int) tiempoTranscurrido;
+
+            // Calcular el progreso de la barra
+            int progreso = (int) ((double) tiempoRestante / segundos * anchoPantalla);
+
+            // Construir la barra de progreso
+            String barraDeProgreso = "■".repeat(progreso) + " ".repeat(anchoPantalla - progreso);
+
+            // Imprimir la barra de progreso y el tiempo restante
+            System.out.printf(YELLOW + "\r[%s] %d segundos" + RESET, barraDeProgreso, tiempoRestante);
+
+            // Pausar para la animación
+            try {
+                Thread.sleep(1000); // Pausa de 1 segundo
+            } catch (InterruptedException e) {
+                System.out.println("\nInterrupción en la cuenta regresiva.");
+                Thread.currentThread().interrupt(); // Restaurar el estado de interrupción
+                break;
+            }
+        }
+
+        System.out.println(YELLOW + "\n¡Despegue!" + RESET);
+    }
+
     public static String introduceMission() {
 
         System.out.println(YELLOW + """
@@ -380,7 +412,7 @@ public class RetoOne {
                                                        =====================================================
 
                 """ + RESET);
-        System.out.print("Por favor dinos tu name: ");
+        System.out.print("Por favor dinos tu nombre: ");
         name = request.nextLine();
         System.out.println(YELLOW + "  !Bienvenid@! a tu Viaje Interplanetario" + RESET);
 
@@ -388,9 +420,15 @@ public class RetoOne {
 
     }
 
-    public static void nave(long duracionAnimacion, double combustible, double oxygen, double velocidadNave,
-            String destino, String remainingTime) {
-
+    public static void nave(long duracionAnimacion, double velocidadNave,
+            String destino, double remainingTime) {
+        calculateResources();
+        mostrarBarraDeProgresoConCuentaRegresiva(10);
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            System.out.println("Error en la Simulación");
+        }
         // Diseño de la nave en varias líneas
         String[] nave = {
                 "        //-A-\\\\",
@@ -408,6 +446,7 @@ public class RetoOne {
         int x = anchoPantalla / 2; // Comienza en el centro de la pantalla
         Random rand = new Random(); // Generador de números aleatorios
         boolean moviendoDerecha = rand.nextBoolean(); // Dirección aleatoria inicial
+        double distanciaRecorrida = 0;
         while (System.currentTimeMillis() - tiempoInicio < duracionAnimacion) {
             // Limpia la consola (simulación)
             System.out.print("\033[H\033[2J");
@@ -417,19 +456,21 @@ public class RetoOne {
             for (String linea : nave) {
                 System.out.println(YELLOW + " ".repeat(x) + linea + RESET);
             } // Pausa para animación
-
+            double porcentajeAlcanzado = (distanciaRecorrida / distance) * 100;
             System.out.printf(PURPLE + """
 
                     Destino: %s
                     Nave: %s
                     Velocidad: %.2f km/h
-                    Combustible: %.2f%%
-                    oxygen: %.2f%%
-                    Tiempo Restante:%s
-                    """ + RESET, destino, chosenShip, velocidadNave, combustible, oxygen, remainingTime);
+                    Combustible: %.2f galones
+                    oxygen: %.2f unidades
+                    Tiempo Restante:%.2f
+                    Porcentaje de la Mision Completada: %.2f%%
+                    """ + RESET, destino, chosenShip, velocidadNave, fuel, oxygen, remainingTime, porcentajeAlcanzado);
             // simulla consumo de combustible y oxygen
-            combustible -= (distance / velocidad) * 0.1;
-            oxygen -= (distance / velocidad) * 0.05;
+            fuel -= (distance / velocidadNave) * 0.1;
+            oxygen -= (distance / velocidadNave) * 0.05;
+            distanciaRecorrida += velocidadNave * 0.0833;
 
             try {
                 Thread.sleep(300); // 40 ms
@@ -462,7 +503,7 @@ public class RetoOne {
 
     public static void DrawLine() {
         System.out.println(CYAN +
-                "■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■" +
+                "■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■" +
                 RESET);
     }
 
