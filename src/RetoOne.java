@@ -437,7 +437,7 @@ public class RetoOne {
             StringBuilder barra = new StringBuilder();
             for (int i = 0; i <= anchoPantalla; i++) {
                 if (i <= progreso) {
-                    barra.append(YELLOW + "■" + RESET);
+                    barra.append(YELLOW + "■" + RESET); //barra// 
                 } else {
                     barra.append(" ");
                 }
