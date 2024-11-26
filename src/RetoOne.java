@@ -10,7 +10,7 @@ public class RetoOne {
     public static String GREEN = "\033[0;32m"; // Green
     public static String YELLOW = "\033[0;36m"; // Yellow
     public static String BLUE = "\033[0;34m"; // Blue
-    public static String CYAN = "\033[0;36m"; // Cyan
+    public static final String CYAN = "\033[0;36m"; // Cyan
     public static String PURPLE = "\033[0;35m"; // White
 
     private static Map<String, Long> planetsAndDistance = new LinkedHashMap<>() {
@@ -27,10 +27,10 @@ public class RetoOne {
 
     private static Map<String, Double> shipSpeed = new LinkedHashMap<>() {
         {
-            put("SolarisExplorer", 50_000.0);
+            put("SolarisExplorer", 100_000.0);
             put("OrionSupply", 75_000.0);
             put("ArtemisFixer", 80_000.0);
-            put("Aegis", 100_000.0);
+            put("Aegis", 120_000.0);
         }
     };
 
@@ -217,9 +217,9 @@ public class RetoOne {
         Long distancia = planetsAndDistance.get(planeta);
         if (distancia != null) {
             velocidad = shipSpeed.getOrDefault(shipSelected, 100000.0);
-            System.out.printf(YELLOW + "Distancia a %s: %,d Kilometros. %n" + RESET, planeta, distance);
+            System.out.printf(YELLOW + "Distancia a %s: %,d Kilometros. %n" + RESET, planeta, distancia);
 
-            var EstimatedTime = calculatedEstimatedTime(distance, velocidad);
+            var EstimatedTime = calculatedEstimatedTime(distancia, velocidad);
             System.out.printf(YELLOW + "Tiempo Estimado de Viaje: %.2f horas \n" + RESET, EstimatedTime);
         }
     }
@@ -244,9 +244,8 @@ public class RetoOne {
         // Los eventos aleatorios, deben ser random, ("""vertuto""")
     }
 
-    private static void ajustarRecursos() {
-        // al introducir eventos aleatorios, se debe mostrar opciones
-        // para ajustar recursos tanto al inicio de la mision y durante el vuelo
+    private static double ajustarRecursos() {
+
     }
 
     private static String shipSelect(int option) {
