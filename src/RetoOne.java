@@ -136,7 +136,7 @@ public class RetoOne {
                             System.out.println(PURPLE
                                     + "Debe Elegir un destino y una nave antes de Iniciar la Simulacion:" + RESET);
                         } else {
-                            startMission(chosenPlanet);
+                            startMission(chosenPlanet, chosenShip);
                         }
                         break;
                     case 5:
@@ -284,22 +284,6 @@ public class RetoOne {
         return distance / velocidad;
     }
 
-    private static void startMission(String planeta) {
-        // long duracionAnimacion, double fuel, double oxygen, double
-        // velocidadNave, String destino, String remainingTime
-
-        distance = planetsAndDistance.get(planeta);
-        double estimatedTimeHours = calculatedEstimatedTime(distance, velocidad);
-        double remainingTime = estimatedTimeHours;
-        long duracionAnimacion = (long) (estimatedTimeHours * 1000);
-        nave(duracionAnimacion, 100000, chosenPlanet, remainingTime);
-
-        // Aqui se introducen eventos aleatorios y utiliza los funciones de las naves
-        // alternativas
-        // para completar la mision.
-        // Los eventos aleatorios, deben ser random, ("""vertuto""")
-    }
-
     private static void calculateResources() {
         System.out.println("!Calculando Recursos para tu Viaje: ");
         mostrarBarraDeProgreso(3000);
@@ -371,38 +355,6 @@ public class RetoOne {
                 RESET, velocidad, fuel, oxygen);
     }
 
-    public static void mostrarBarraDeProgresoConCuentaRegresiva(int segundos) {
-        int anchoPantalla = 10; // Número total de caracteres en la barra de progreso
-        System.out.println("El viaje interplanetario comenzará en:");
-
-        long tiempoInicio = System.currentTimeMillis();
-
-        while ((System.currentTimeMillis() - tiempoInicio) / 1000 < segundos) {
-            long tiempoTranscurrido = (System.currentTimeMillis() - tiempoInicio) / 1000;
-            int tiempoRestante = segundos - (int) tiempoTranscurrido;
-
-            // Calcular el progreso de la barra
-            int progreso = (int) ((double) tiempoRestante / segundos * anchoPantalla);
-
-            // Construir la barra de progreso
-            String barraDeProgreso = "■".repeat(progreso) + " ".repeat(anchoPantalla - progreso);
-
-            // Imprimir la barra de progreso y el tiempo restante
-            System.out.printf(YELLOW + "\r[%s] %d segundos" + RESET, barraDeProgreso, tiempoRestante);
-
-            // Pausar para la animación
-            try {
-                Thread.sleep(1000); // Pausa de 1 segundo
-            } catch (InterruptedException e) {
-                System.out.println("\nInterrupción en la cuenta regresiva.");
-                Thread.currentThread().interrupt(); // Restaurar el estado de interrupción
-                break;
-            }
-        }
-
-        System.out.println(YELLOW + "\n¡Despegue!" + RESET);
-    }
-
     public static String introduceMission() {
 
         System.out.println(YELLOW + """
@@ -418,6 +370,15 @@ public class RetoOne {
 
         return name;
 
+    }
+
+    private static void startMission(String planeta, String ship) {
+        distance = planetsAndDistance.get(planeta);
+        double estimatedTimeHours = calculatedEstimatedTime(distance, velocidad);
+        double remainingTime = estimatedTimeHours;
+        double acelerarionFactor = 0.9;
+        long duracionAnimacion = (long) (estimatedTimeHours * 1000 * 3600 * acelerarionFactor);
+        nave(duracionAnimacion, 100000, chosenPlanet, remainingTime);
     }
 
     public static void nave(long duracionAnimacion, double velocidadNave,
@@ -439,7 +400,7 @@ public class RetoOne {
 
         // Dimensiones del espacio de animación
         int anchoPantalla = 100; // Ancho máximo de la pantalla
-        int velocidad = 3; // Aumento de la velocidad de movimiento para un efecto más amplio
+        int velocidad = 2; // Aumento de la velocidad de movimiento para un efecto más amplio
         long tiempoInicio = System.currentTimeMillis();
 
         // Animación
@@ -468,9 +429,9 @@ public class RetoOne {
                     Porcentaje de la Mision Completada: %.2f%%
                     """ + RESET, destino, chosenShip, velocidadNave, fuel, oxygen, remainingTime, porcentajeAlcanzado);
             // simulla consumo de combustible y oxygen
-            fuel -= (distance / velocidadNave) * 0.1;
-            oxygen -= (distance / velocidadNave) * 0.05;
-            distanciaRecorrida += velocidadNave * 0.0833;
+            fuel -= (distance / velocidadNave) * 5.5;
+            oxygen -= (distance / velocidadNave) * 5.5;
+            distanciaRecorrida += velocidadNave * 5.5;
 
             try {
                 Thread.sleep(300); // 40 ms
@@ -540,6 +501,38 @@ public class RetoOne {
         }
 
         System.out.println("\n¡Calculo completado!");
+    }
+
+    public static void mostrarBarraDeProgresoConCuentaRegresiva(int segundos) {
+        int anchoPantalla = 10; // Número total de caracteres en la barra de progreso
+        System.out.println("El viaje interplanetario comenzará en:");
+
+        long tiempoInicio = System.currentTimeMillis();
+
+        while ((System.currentTimeMillis() - tiempoInicio) / 1000 < segundos) {
+            long tiempoTranscurrido = (System.currentTimeMillis() - tiempoInicio) / 1000;
+            int tiempoRestante = segundos - (int) tiempoTranscurrido;
+
+            // Calcular el progreso de la barra
+            int progreso = (int) ((double) tiempoRestante / segundos * anchoPantalla);
+
+            // Construir la barra de progreso
+            String barraDeProgreso = "■".repeat(progreso) + " ".repeat(anchoPantalla - progreso);
+
+            // Imprimir la barra de progreso y el tiempo restante
+            System.out.printf(YELLOW + "\r[%s] %d segundos" + RESET, barraDeProgreso, tiempoRestante);
+
+            // Pausar para la animación
+            try {
+                Thread.sleep(1000); // Pausa de 1 segundo
+            } catch (InterruptedException e) {
+                System.out.println("\nInterrupción en la cuenta regresiva.");
+                Thread.currentThread().interrupt(); // Restaurar el estado de interrupción
+                break;
+            }
+        }
+
+        System.out.println(YELLOW + "\n¡Despegue!" + RESET);
     }
 
 }
