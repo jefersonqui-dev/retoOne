@@ -33,6 +33,14 @@ public class RetoOne {
             put("Aegis", 100_000.0);
         }
     };
+    private static Map<String, Double> consumoCombustible = new LinkedHashMap<>() {
+        {
+            put("SolarisExplorer", 50.0); // consumo en uniades por cada millon de kilometros
+            put("OrionSupply", 75.0);
+            put("ArtemisFixer", 80.0);
+            put("Aegis", 100.0);
+        }
+    };
 
     private static Map<String, String[]> shipDescriptions = Map.of(
             "SolarisExplorer", new String[] {
@@ -67,7 +75,6 @@ public class RetoOne {
 
     public static void main(String[] args) throws Exception {
         introduceMission();
-
         showMenu();
 
     }
@@ -91,15 +98,14 @@ public class RetoOne {
                 System.out.println("Opcion No valida, Intenta de Nuevo");
             }
         } while (!ready);
-        System.out.println("!Perfecto: Aqui mostramos la informacion básica de tu Nave: ");
-        initialMissionSetup();
+
         int option;
 
         boolean exit = false;
         do {
             System.out.println("""
                     1. Seleccionar Destino
-                    2. Ajustar Recursos
+                    2. Calcular Recursos
                     3. Iniciar Mision
                     4. Informacion De La Flota
                     0. Salir
@@ -114,15 +120,16 @@ public class RetoOne {
                         if (chosenPlanet != null) {
                             calculateDistance(chosenPlanet);
                         }
+
                         break;
                     case 2:
-                       adjustResources();
+                        calculateResources();
                         break;
                     case 3:
                         startMission(chosenPlanet);
                         break;
                     case 4:
-                    fleetInformation();
+                        fleetInformation();
                         break;
                     case 0:
                         exit = true;
@@ -140,7 +147,7 @@ public class RetoOne {
     }
 
     private static void fleetInformation() {
-    
+
         int option = 0;
         boolean inputValido = false;
         do {
@@ -166,8 +173,8 @@ public class RetoOne {
         } while (!inputValido);
         shipSelected = shipSelect(option);
         velocidad = shipSpeed.get(shipSelected);
-        fuel =adjustResources(); 
-        oxygen = oxygen (); 
+        fuel = fuelAdjust();
+        oxygen = oxygen();
         String[] description = shipDescriptions.getOrDefault(shipSelected,
                 new String[] { "Desconocida", "No esp", "No esp" });
         var shipOvjetive = description[0];
@@ -218,12 +225,17 @@ public class RetoOne {
         Long distancia = planetsAndDistance.get(planeta);
         if (distancia != null) {
             velocidad = shipSpeed.getOrDefault(shipSelected, 100000.0);
-            System.out.printf(YELLOW + "Distancia a %s: %,d Kilometros. %n" + RESET, planeta, distancia);
+            System.out.printf(YELLOW +
+                    "Distancia a %s:      %,d kilometros\n" +
+                    RESET, planeta, distancia);
 
-            var EstimatedTime = calculatedEstimatedTime( distancia, velocidad);
-            var  days= EstimatedTime /24; 
-            var remainingHours = EstimatedTime %24; 
-            System.out.printf(YELLOW + "%.2f days & %.2f horas %n" + RESET, days, remainingHours);
+            var EstimatedTime = calculatedEstimatedTime(distancia, velocidad);
+            var days = (int) EstimatedTime / 24;
+            var remainingHours = EstimatedTime % 24;
+            var remainingHoursInt = (int) remainingHours;
+            System.out.printf(YELLOW +
+                    "Tiempo Estimado:        %d dias y %d horas  %n"
+                    + RESET, days, remainingHoursInt, remainingHoursInt);
         }
     }
 
@@ -247,21 +259,23 @@ public class RetoOne {
         // Los eventos aleatorios, deben ser random, ("""vertuto""")
     }
 
-    private static double adjustResources() {
-        // al introducir eventos aleatorios, se debe mostrar opciones
-        // para ajustar recursos tanto al inicio de la mision y durante el vuelo
-        fuel = 80; 
-       
-        return fuel; 
-
-        
-
+    private static void calculateResources() {
+        System.out.println("!Calculando Recursos para tu Viaje: ");
+        mostrarBarraDeProgreso(3000);
+        initialMissionSetup();
     }
-    public static double  oxygen () {
-        oxygen = 70; 
-         return oxygen; 
 
-        
+    public static double oxygen() {
+        distance = planetsAndDistance.get(chosenPlanet);
+        double oxygen = distance * 100;// unidades de oxigeno por cada millon de kilometros(100 )
+        return oxygen;
+    }
+
+    public static double fuelAdjust() {
+        distance = planetsAndDistance.get(chosenPlanet);
+        double fuel = consumoCombustible.get("SolarisExplorer") * distance;
+        return fuel;
+
     }
 
     private static String shipSelect(int option) {
@@ -302,31 +316,20 @@ public class RetoOne {
 
         chosenPlanet = new ArrayList<>(planetsAndDistance.keySet()).get(option - 1);
         System.out.println(YELLOW + "Usted ha elegido viajar a: " + chosenPlanet + RESET);
+        System.out.println("!Calculando Distancia y Tiempo Estimado:");
         mostrarBarraDeProgreso(5000);
 
     }
 
     public static void initialMissionSetup() {
-        DrawLine();
-        System.out.print(YELLOW + """
-                Nave Principal: Solaris Explorer
-                Velocidad: parametro
-                fuel: parametro
-                oxygen:
-                estado: 0%
-                """ + RESET);
-        DrawLine();
-        // La nave se ha configurado con los siguientes parametros, si desea ajustarlos
-        // Se debe Mostrar lo siguiente en consola, Luego de la confirmacion(S/N
-        // - Nave principal: [Nave de Exploración]
-        // - Velocidad: [100,000 km/h]
-        // - fuel: [80%]
-        // - Oxígeno: [100%]
-        // Para ser mas interactivo se debe ajustar la variable fuel y oxygen
-        // con valores Ranfuelom, esto permitira
-        // al usuario hacer posteriores ajustes fuelesde el menu principal
-        // N: La nave no esta totalmente preparada, por favor realiza los cambios,
-        // (S/N(Salir)(Continuar dependera de las otras naves
+
+        fuel = fuelAdjust();
+        oxygen = oxygen();
+
+        System.out.printf(YELLOW +
+                "Combustible Necesario:             %.1f galones\n" +
+                "Oxigeno Necesario:                 %.1f unidades\n" +
+                RESET, velocidad, fuel, oxygen);
     }
 
     public static String introduceMission() {
@@ -348,7 +351,6 @@ public class RetoOne {
 
     public static void nave(long duracionAnimacion, double combustible, double oxygen, double velocidadNave,
             String destino, String remainingTime) {
-                
 
         // Diseño de la nave en varias líneas
         String[] nave = {
@@ -427,7 +429,6 @@ public class RetoOne {
     public static void mostrarBarraDeProgreso(long duracionTotal) {
         int anchoPantalla = 100; // Ancho de la barra de progreso
         long tiempoInicio = System.currentTimeMillis();
-        System.out.println("Calculando Distancia y tiempo estimado del Viaje...");
 
         while (System.currentTimeMillis() - tiempoInicio <= duracionTotal) {
             long tiempoTranscurrido = System.currentTimeMillis() - tiempoInicio;
@@ -437,7 +438,7 @@ public class RetoOne {
             StringBuilder barra = new StringBuilder();
             for (int i = 0; i <= anchoPantalla; i++) {
                 if (i <= progreso) {
-                    barra.append(YELLOW + "■" + RESET); //barra// 
+                    barra.append(YELLOW + "■" + RESET); // barra//
                 } else {
                     barra.append(" ");
                 }
