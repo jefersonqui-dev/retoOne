@@ -71,6 +71,7 @@ public class RetoOne {
     private static double fuel;
     private static double oxygen;
     private static long distance;
+    private static String chosenShip;
     static Scanner request = new Scanner(System.in);
 
     public static void main(String[] args) throws Exception {
@@ -105,9 +106,10 @@ public class RetoOne {
         do {
             System.out.println("""
                     1. Seleccionar Destino
-                    2. Calcular Recursos
-                    3. Iniciar Mision
-                    4. Informacion De La Flota
+                    2. Elegir Nave
+                    3. Ajustar Recursos
+                    4. Iniciar Mision
+                    5. Informacion De Las Naves
                     0. Salir
                         """);
             System.out.print("Elige una Opcion: ");
@@ -117,18 +119,27 @@ public class RetoOne {
                 switch (option) {
                     case 1:
                         chooseDestination();
-                        if (chosenPlanet != null) {
-                            calculateDistance(chosenPlanet);
-                        }
-
                         break;
                     case 2:
-                        calculateResources();
+                        if (chosenPlanet == null) {
+                            System.out.println(PURPLE + "Debe elegir un destino antes de elegir una nave: " + RESET);
+                        } else {
+                            choseInterplanetaryShip();
+                            calculateDistance(chosenPlanet);
+                        }
                         break;
                     case 3:
-                        startMission(chosenPlanet);
+                        ajustResources();
                         break;
                     case 4:
+                        if (chosenPlanet == null && chosenShip == null) {
+                            System.out.println(PURPLE
+                                    + "Debe Elegir un destino y una nave antes de Iniciar la Simulacion:" + RESET);
+                        } else {
+                            startMission(chosenPlanet);
+                        }
+                        break;
+                    case 5:
                         fleetInformation();
                         break;
                     case 0:
@@ -144,6 +155,38 @@ public class RetoOne {
             }
         } while (!exit);
         System.out.println("¡Gracias por usar el Simulador! ¡Hasta la próxima misión!");
+    }
+
+    private static void ajustResources() {
+    }
+
+    private static void choseInterplanetaryShip() {
+
+        int option = 0;
+        boolean inputValido = false;
+        do {
+            System.out.println("Lista de Naves Interplanetarias: ");
+            int index = 1;
+            for (String ship : shipSpeed.keySet()) {
+                System.out.printf(YELLOW + "[%d] %s, Velocidad: %.1f km/h\n" + RESET, index++, ship,
+                        shipSpeed.get(ship));
+            }
+            System.out.println("Elija La Nave a la cual desearia Viajar: ");
+            if (request.hasNextInt()) {
+                option = request.nextInt();
+                if (option > 0 && option <= shipSpeed.size()) {
+                    inputValido = true;
+                } else {
+                    System.out.println(PURPLE + "Opcion fuera de rango, intente de nuevo (1 - 4 )" + RESET);
+                }
+            } else {
+                System.out.println(PURPLE + "Entrada Invalida. porfavor ingrese un numero Valido" + RESET);
+                request.next();
+            }
+        } while (!inputValido);
+        chosenShip = new ArrayList<>(shipSpeed.keySet()).get(option - 1);
+        System.out.println(YELLOW + "Usted ha elegido Viajar con: " + chosenShip + RESET);
+
     }
 
     private static void fleetInformation() {
@@ -173,8 +216,7 @@ public class RetoOne {
         } while (!inputValido);
         shipSelected = shipSelect(option);
         velocidad = shipSpeed.get(shipSelected);
-        fuel = fuelAdjust();
-        oxygen = oxygen();
+
         String[] description = shipDescriptions.getOrDefault(shipSelected,
                 new String[] { "Desconocida", "No esp", "No esp" });
         var shipOvjetive = description[0];
@@ -182,19 +224,19 @@ public class RetoOne {
         var utility = description[2];
         switch (shipSelected) {
             case "SolarisExplorer":
-                printShipInformation(shipSelected, velocidad, fuel, oxygen, shipOvjetive, mainFunction,
+                printShipInformation(shipSelected, velocidad, shipOvjetive, mainFunction,
                         utility);
                 break;
             case "OrionSupply":
-                printShipInformation(shipSelected, velocidad, fuel, oxygen, shipOvjetive, mainFunction,
+                printShipInformation(shipSelected, velocidad, shipOvjetive, mainFunction,
                         utility);
                 break;
             case "ArtemisFixer":
-                printShipInformation(shipSelected, velocidad, fuel, oxygen, shipOvjetive, mainFunction,
+                printShipInformation(shipSelected, velocidad, shipOvjetive, mainFunction,
                         utility);
                 break;
             case "Aegis":
-                printShipInformation(shipSelected, velocidad, fuel, oxygen, shipOvjetive, mainFunction,
+                printShipInformation(shipSelected, velocidad, shipOvjetive, mainFunction,
                         utility);
                 break;
             default:
@@ -203,25 +245,24 @@ public class RetoOne {
         }
     }
 
-    private static void printShipInformation(String tipoNave, double velocidad, double fuel, double oxygen,
+    private static void printShipInformation(String tipoNave, double velocidad,
             String objetivo,
             String mainFunction, String utility) {
         DrawLine();
         System.out.printf(CYAN + """
-                    Nave Principal: <<<%s>>>
+                    Nave: <<<%s>>>
                     Objetivo: %s
                     Velocidad: %.2f km/h
-                    fuel: %.2f
-                    oxygen: %.2f
                     Funcion Principal: %s
                     Utiliad: %s
-                """ + RESET, tipoNave, objetivo, velocidad, fuel, oxygen, mainFunction, utility);
+                """ + RESET, tipoNave, objetivo, velocidad, mainFunction, utility);
         DrawLine();
 
     }
 
     private static void calculateDistance(String planeta) {
-
+        System.out.println("Calculando Distancia y Tiempo Estimado de Viaje");
+        mostrarBarraDeProgreso(3000);
         Long distancia = planetsAndDistance.get(planeta);
         if (distancia != null) {
             velocidad = shipSpeed.getOrDefault(shipSelected, 100000.0);
@@ -302,22 +343,20 @@ public class RetoOne {
             System.out.print(" Elija el planeta al cual desearia Viajar: ");
             if (request.hasNextInt()) {
                 option = request.nextInt();
-                if (option >= 0 && option <= planetsAndDistance.size()) {
+                if (option > 0 && option <= planetsAndDistance.size()) {
                     inputValido = true;
                 } else {
-                    System.out.println("Opcion Fuera de rango, Intente de Nuevo.");
+                    System.out.println(PURPLE + "Opcion Fuera de rango, Intente de Nuevo." + RESET);
                 }
 
             } else {
-                System.out.println("Entrada Invalida. por favor. Ingrese un Numero(1 - 7).");
+                System.out.println(PURPLE + "Entrada Invalida. por favor. Ingrese un Numero(1 - 7)." + RESET);
                 request.next();
             }
         } while (!inputValido);
 
         chosenPlanet = new ArrayList<>(planetsAndDistance.keySet()).get(option - 1);
         System.out.println(YELLOW + "Usted ha elegido viajar a: " + chosenPlanet + RESET);
-        System.out.println("!Calculando Distancia y Tiempo Estimado:");
-        mostrarBarraDeProgreso(5000);
 
     }
 
@@ -382,11 +421,12 @@ public class RetoOne {
             System.out.printf(PURPLE + """
 
                     Destino: %s
+                    Nave: %s
                     Velocidad: %.2f km/h
                     Combustible: %.2f%%
                     oxygen: %.2f%%
                     Tiempo Restante:%s
-                    """ + RESET, destino, velocidadNave, combustible, oxygen, remainingTime);
+                    """ + RESET, destino, chosenShip, velocidadNave, combustible, oxygen, remainingTime);
             // simulla consumo de combustible y oxygen
             combustible -= (distance / velocidad) * 0.1;
             oxygen -= (distance / velocidad) * 0.05;
