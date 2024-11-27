@@ -373,22 +373,11 @@ public class RetoOne {
         System.out.println("Iniciando Simulacion de Viaje...");
         calculateResources();
         showProgressBarWithCountdown(5);
-
+        // hacemos uso del bloque try/catch para manejar errores y excepciones,
+        // asegurando
+        // que el programa no falle abruptamente
         try {
             Thread.sleep(1000);
-
-            // System.out.printf(PURPLE + """
-            // // Se Imprime
-            // Destino: %s
-            // Nave: %s
-            // Velocidad: %.2f km/h
-            // Distancia: %.2f km
-            // Combustible: %.2f galones
-            // oxygen: %.2f unidades
-            // Tiempo Estimado: %.2f dias
-            // """ + RESET, chosenPlanet, chosenShip, speed, distancia, fuelReserve,
-            // oxigenReserve,
-            // EstimatedTime);
 
             // variables para los calculos del viaje:
             var kilometersPerPercent = distancia / 100;
@@ -396,6 +385,8 @@ public class RetoOne {
             var oxygenPerPercent = kilometersPerPercent * 2;
             var timePerPercent = EstimatedTime / 100;
             Random rand = new Random();
+
+            // limpia el contenido visible de la consola, se actualiza
             System.out.print("\033[H\033[2J");
             System.out.flush();
             // Simulacion del Viaje
@@ -425,8 +416,10 @@ public class RetoOne {
                     Thread.sleep(3000);
                     System.out.print("\r                                   ");
                 }
+
                 System.out.print("\033[H\033[2J");
                 System.out.flush();
+
                 int barLength = 80;
                 System.out.printf(PURPLE + """
                         Progreso:  %s
