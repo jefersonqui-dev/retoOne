@@ -15,13 +15,13 @@ public class RetoOne {
 
     private static Map<String, Long> planetsAndDistance = new LinkedHashMap<>() {
         {
-            put("Mercurio", 77_000_000L);
-            put("Venus", 61_1000L);
-            put("Marte", 54_000_000L);
-            put("Jupiter", 587_000_000L);
-            put("Saturno", 1_345_000_000L);
-            put("Urano", 2_725_000_000L);
-            put("Neptuno", 4_351_400_000L);
+            put("Mercurio", 77_000L);
+            put("Venus", 61_000L);
+            put("Marte", 54_000L);
+            put("Jupiter", 587_000L);
+            put("Saturno", 1_345_000L);
+            put("Urano", 2_725_000L);
+            put("Neptuno", 4_351_000L);
         }
     };
 
@@ -136,6 +136,7 @@ public class RetoOne {
                             System.out.println(PURPLE
                                     + "Debe Elegir un destino y una nave antes de Iniciar la Simulacion:" + RESET);
                         } else {
+                            //
                             startMission(chosenPlanet, chosenShip);
                         }
                         break;
@@ -271,12 +272,13 @@ public class RetoOne {
                     RESET, planeta, distancia);
 
             var EstimatedTime = calculatedEstimatedTime(distancia, velocidad);
-            var days = (int) EstimatedTime / 24;
-            var remainingHours = EstimatedTime % 24;
-            var remainingHoursInt = (int) remainingHours;
-            System.out.printf(YELLOW +
-                    "Tiempo Estimado:        %d dias y %d horas  %n"
-                    + RESET, days, remainingHoursInt, remainingHoursInt);
+            System.out.printf(YELLOW + "Tiempo Estimado: %.2f" + RESET, EstimatedTime);
+            // var days = (int) EstimatedTime / 24;
+            // var remainingHours = EstimatedTime % 24;
+            // var remainingHoursInt = (int) remainingHours;
+            // System.out.printf(YELLOW +
+            // "Tiempo Estimado: %d dias y %d horas %n"
+            // + RESET, days, remainingHoursInt, remainingHoursInt);
         }
     }
 
@@ -292,7 +294,7 @@ public class RetoOne {
 
     public static double oxygen() {
         distance = planetsAndDistance.get(chosenPlanet);
-        double oxygen = distance * 100;// unidades de oxigeno por cada millon de kilometros(100 )
+        double oxygen = distance * 150;// unidades de oxigeno por cada millon de kilometros(150 )
         return oxygen;
     }
 
@@ -373,18 +375,19 @@ public class RetoOne {
     }
 
     private static void startMission(String planeta, String ship) {
-        distance = planetsAndDistance.get(planeta);
+        // var distancePlanet = planetsAndDistance.get(planeta);
         double estimatedTimeHours = calculatedEstimatedTime(distance, velocidad);
         double remainingTime = estimatedTimeHours;
-        double acelerarionFactor = 0.9;
+        double acelerarionFactor = 50;
         long duracionAnimacion = (long) (estimatedTimeHours * 1000 * 3600 * acelerarionFactor);
         nave(duracionAnimacion, 100000, chosenPlanet, remainingTime);
+        // simularViajeEspacial(duracionAnimacion);
     }
 
     public static void nave(long duracionAnimacion, double velocidadNave,
             String destino, double remainingTime) {
         calculateResources();
-        mostrarBarraDeProgresoConCuentaRegresiva(10);
+        mostrarBarraDeProgresoConCuentaRegresiva(5);
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {
@@ -400,7 +403,7 @@ public class RetoOne {
 
         // Dimensiones del espacio de animación
         int anchoPantalla = 100; // Ancho máximo de la pantalla
-        int velocidad = 2; // Aumento de la velocidad de movimiento para un efecto más amplio
+        int speedSimulate = 2; // Aumento de la velocidad de movimiento para un efecto más amplio
         long tiempoInicio = System.currentTimeMillis();
 
         // Animación
@@ -415,9 +418,25 @@ public class RetoOne {
 
             // Imprime cada línea del diseño con desplazamiento horizontal
             for (String linea : nave) {
-                System.out.println(YELLOW + " ".repeat(x) + linea + RESET);
-            } // Pausa para animación
-            double porcentajeAlcanzado = (distanciaRecorrida / distance) * 100;
+                System.out.println(YELLOW + " ".repeat(Math.max(0, x)) + linea + RESET);
+            }
+            double progresoSimulado = (System.currentTimeMillis() - tiempoInicio) / (double) duracionAnimacion;
+            distanciaRecorrida = distance * progresoSimulado;
+
+            double porcentajeAlcanzado = progresoSimulado * 100;
+            int progreso = (int) porcentajeAlcanzado;
+
+            if (progreso == 50) {
+                System.out.println("Mitad de Camino");
+            }
+            if (rand.nextInt(50) < 2) {
+                System.out.println("Evento Inesperado! Realizando Ajustes...");
+                try {
+                    Thread.sleep(3000);
+                } catch (InterruptedException e) {
+                    System.out.println("Error durante el evento inesperado.");
+                }
+            }
             System.out.printf(PURPLE + """
 
                     Destino: %s
@@ -429,9 +448,9 @@ public class RetoOne {
                     Porcentaje de la Mision Completada: %.2f%%
                     """ + RESET, destino, chosenShip, velocidadNave, fuel, oxygen, remainingTime, porcentajeAlcanzado);
             // simulla consumo de combustible y oxygen
-            fuel -= (distance / velocidadNave) * 5.5;
-            oxygen -= (distance / velocidadNave) * 5.5;
-            distanciaRecorrida += velocidadNave * 5.5;
+            fuel -= (distance / velocidadNave) * 0.5;
+            oxygen -= (distance / velocidadNave) * 0.5;
+            distanciaRecorrida += velocidadNave * 0.5;
 
             try {
                 Thread.sleep(300); // 40 ms
@@ -446,13 +465,14 @@ public class RetoOne {
             }
 
             if (moviendoDerecha) {
-                x += velocidad; // Movimiento hacia la derecha
+                x += speedSimulate; // Movimiento hacia la derecha
                 if (x >= anchoPantalla - nave[0].length()) {
                     moviendoDerecha = false; // Cambia dirección
                 }
             } else {
-                x -= velocidad; // Movimiento hacia la izquierda
+                x -= speedSimulate; // Movimiento hacia la izquierda
                 if (x <= 0) {
+                    x = 0;
                     moviendoDerecha = true; // Cambia dirección
                 }
             }
