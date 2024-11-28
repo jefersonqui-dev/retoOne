@@ -43,9 +43,11 @@ Este programa permite realizar una simulacón interplanetaria de diferentes tipo
 
 ### **Funcionalidades:**
 
-- El usuario puede seleccionar un destino de una lista de planetas y lunas. Esta selección es obligatoria antes de proceder a elegir una nave.
+- El usuario puede seleccionar un destino de una lista de planetas. Esta selección es obligatoria antes de proceder a elegir una nave.
 
 - Una vez seleccionado el destino, el usuario debe elegir una nave espacial. El programa calculará la distancia al destino y el tiempo estimado de viaje.
+
+---
 
 ### **Iniciar Simulación**
 
@@ -56,6 +58,8 @@ Al iniciar la simulación:
     -(S/N) Si digita S tomara los recursos calculados,
   - Si digita N usted podra ajustar los recursos según lo considere
 - Se simula el viaje hasta llegar al destino o fallar por falta de recursos.
+
+---
 
 ### **Eventos Aleatorios**
 
