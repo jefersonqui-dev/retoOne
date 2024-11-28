@@ -5,16 +5,8 @@ import java.util.Random;
 import java.util.Scanner;
 
 public class RetoOne {
-    public static String RESET = "\033[0m";
-    public static String RED = "\033[0;31m";
-    public static String GREEN = "\033[0;32m";
-    public static String YELLOW = "\033[0;36m";
-    public static String BLUE = "\033[0;34m";
-    public static String CYAN = "\033[0;36m";
-    public static String PURPLE = "\033[0;35m";
 
     // Mapas Clave - Valor
-
     private static Map<String, Double> planetsAndDistance = new LinkedHashMap<>() {
         {
             put("Mercurio", 71.0);// Distancias en Millones de km
@@ -733,5 +725,13 @@ public class RetoOne {
 
         System.out.println(YELLOW + "\n¡Despegue!" + RESET);
     }
+
+    public static String RESET = "\033[0m";
+    public static String RED = "\033[0;31m";
+    public static String GREEN = "\033[0;32m";
+    public static String YELLOW = "\033[0;36m";
+    public static String BLUE = "\033[0;34m";
+    public static String CYAN = "\033[0;36m";
+    public static String PURPLE = "\033[0;35m";
 
 }
