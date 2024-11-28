@@ -6,7 +6,7 @@ Este programa permite realizar una simulacón interplanetaria de diferentes tipo
 
 #### **Instalación:**
 
-- Clonar este Repositorio
+- Clonar este Repositorio.
 
 ```
     git clone https://github.com/jefersonqui-dev/retoOne.git
@@ -33,45 +33,32 @@ Este programa permite realizar una simulacón interplanetaria de diferentes tipo
 
 **Menú Principal:**
 
-    1. Elegir destino
+    1. Seleccionar destino
     2. Elegir nave
     3. Iniciar simulación
-    4. Información de
+    4. Información De Las Naves
+    0. Salir
 
 ---
 
-### **Funcionamiento:**
+### **Funcionalidades:**
 
-Introduce tu nombre: El programa pedirá al usuario que introduzca su nombre.
+- El usuario puede seleccionar un destino de una lista de planetas y lunas. Esta selección es obligatoria antes de proceder a elegir una nave.
 
-Menú Principal:
+- Una vez seleccionado el destino, el usuario debe elegir una nave espacial. El programa calculará la distancia al destino y el tiempo estimado de viaje.
 
-Elegir destino: Selecciona el planeta o luna que deseas visitar.
+### **Iniciar Simulación**
 
-Elegir nave: Escoge entre las naves disponibles.
+Al iniciar la simulación:
 
-Iniciar simulación: Comienza la simulación del viaje.
+- Se calculan los recursos necesarios como combustible y oxígeno.
+  - El usuario debe validar si considera aumentar o disminuir los recursos
+    -(S/N) Si digita S tomara los recursos calculados,
+  - Si digita N usted podra ajustar los recursos según lo considere
+- Se simula el viaje hasta llegar al destino o fallar por falta de recursos.
 
-Información de las naves: Muestra detalles sobre cada nave espacial disponible.
+### **Eventos Aleatorios**
 
-### **Clase 1: Introducción a POO: Clases y Objetos**
-
-- **Temas:**
-  - Conceptos básicos de POO.
-  - Creación de clases, métodos y objetos.
-- **Objetivo:** Aprender a definir clases y crear instancias (objetos) para resolver problemas básicos.
+Se introducen eventos aleatorios mencionados anteriormente, el usuario debera decidir si sacrifica oxigeno o combustible para solucionar el problema y continuar con el viaje
 
 ---
-
-The workspace contains two folders by default, where:
-
-- `src`: the folder to maintain sources
-- `lib`: the folder to maintain dependencies
-
-Meanwhile, the compiled output files will be generated in the `bin` folder by default.
-
-> If you want to customize the folder structure, open `.vscode/settings.json` and update the related settings there.
-
-## Dependency Management
-
-The `JAVA PROJECTS` view allows you to manage your dependencies. More details can be found [here](https://github.com/microsoft/vscode-java-dependency#manage-dependencies).
