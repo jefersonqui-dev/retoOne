@@ -21,7 +21,7 @@ public class RetoOne {
 
     private static Map<String, Double> shipSpeed = new LinkedHashMap<>() {
         {
-            put("MillenniumFalcon", 100.0);
+            put("MillenniumFalcon", 100.0);// velocidad en miles de kilometros
             put("USSEnterprise", 70.5);
             put("Nostromo", 80.0);
             put("Serenity", 50.0);
@@ -292,13 +292,13 @@ public class RetoOne {
                     RESET, planet, distance);
 
             EstimatedTime = calculatedEstimatedTime(distance, speed);
-            System.out.printf(PURPLE + "Tiempo Estimado: %.2f Dias\n" + RESET, EstimatedTime);
+            System.out.printf(PURPLE + "Tiempo Estimado: %.2f Horas\n" + RESET, EstimatedTime);
 
         }
     }
 
     public static double calculatedEstimatedTime(double distance, double speed) {
-        return distance / (speed * 24); // devuelve el tiempo en dias
+        return distance / (speed); // devuelve el tiempo en dias
     }
 
     private static void calculateResources() {
@@ -636,7 +636,7 @@ public class RetoOne {
 
     }
 
-    public static String introduceMission() {
+    public static void introduceMission() {
 
         System.out.println(YELLOW + """
                 =====================================================
@@ -648,8 +648,6 @@ public class RetoOne {
         System.out.print("\033[H\033[2J");
         System.out.flush();
         System.out.println(YELLOW + "  !Bienvenid@! a tu Viaje Interplanetario" + RESET);
-
-        return name;
 
     }
 
